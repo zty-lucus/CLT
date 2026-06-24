@@ -4,10 +4,11 @@
 所有 API 接口统一使用此模块返回数据
 """
 
+from typing import Any
 from flask import jsonify
 
 
-def success(data=None, message='操作成功'):
+def success(data: Any = None, message: str = '操作成功'):
     """
     成功响应
     返回格式: {"code": 0, "message": "xxx", "data": {...}}
@@ -19,7 +20,7 @@ def success(data=None, message='操作成功'):
     })
 
 
-def error(code, message='操作失败', data=None):
+def error(code: int, message: str = '操作失败', data: Any = None):
     """
     错误响应
     返回格式: {"code": 1001, "message": "xxx", "data": null}

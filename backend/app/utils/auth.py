@@ -7,6 +7,7 @@ JWT 认证工具
 from functools import wraps
 
 from flask import current_app
+from flask import request
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -64,6 +65,20 @@ def verify_token_from_socket(token):
         return user_id
     except Exception:
         return None
+
+
+def jwt_required_optional():
+    """装饰器：JWT验证，失败返回统一错误格式"""
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            try:
+                verify_jwt_in_request()
+            except Exception:
+                return error(1005, 'Token无效或过期', 401)
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
 
 
 def jwt_required_with_user(fn):

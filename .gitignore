@@ -18,6 +18,9 @@ dist/
 .DS_Store
 Thumbs.db
 
+# Word temp files
+~$*.docx
+
 # Uploads
 backend/uploads/*
 !backend/uploads/.gitkeep
