@@ -16,21 +16,15 @@
         </div>
         <div class="group-info-row">
           <span class="label">群主</span>
-          <span class="value">
-            {{ getCreatorName() }}
-          </span>
+          <span class="value">{{ getCreatorName() }}</span>
         </div>
         <div class="group-info-row">
           <span class="label">成员数</span>
-          <span class="value">
-            {{ detail.members?.length || 0 }}
-          </span>
+          <span class="value">{{ detail.members?.length || 0 }}</span>
         </div>
         <div class="group-info-row">
           <span class="label">创建时间</span>
-          <span class="value">
-            {{ formatDate(detail.created_at) }}
-          </span>
+          <span class="value">{{ formatDate(detail.created_at) }}</span>
         </div>
       </div>
 
@@ -39,40 +33,42 @@
         <div class="section-title">
           群成员 ({{ detail.members?.length || 0 }})
         </div>
-        <div
-          v-for="member in detail.members"
-          :key="member.user_id"
-          class="member-item"
-        >
-          <el-avatar :size="32" :src="member.avatar">
-            {{ (member.nickname || '?').charAt(0) }}
-          </el-avatar>
-          <div class="member-info">
-            <span class="member-name">{{ member.nickname }}</span>
-            <el-tag
-              v-if="member.role === 2"
-              size="small"
-              type="danger"
-            >
-              群主
-            </el-tag>
-            <el-tag
-              v-else-if="member.role === 1"
-              size="small"
-              type="warning"
-            >
-              管理员
-            </el-tag>
-          </div>
-          <el-button
-            v-if="canRemove(member)"
-            type="danger"
-            text
-            size="small"
-            @click="handleKick(member.user_id)"
+        <div class="member-list">
+          <div
+            v-for="member in detail.members"
+            :key="member.user_id"
+            class="member-item"
           >
-            移出
-          </el-button>
+            <el-avatar :size="32" :src="member.avatar">
+              {{ (member.nickname || '?').charAt(0) }}
+            </el-avatar>
+            <div class="member-info">
+              <span class="member-name">{{ member.nickname }}</span>
+              <el-tag
+                v-if="member.role === 2"
+                size="small"
+                type="danger"
+              >
+                群主
+              </el-tag>
+              <el-tag
+                v-else-if="member.role === 1"
+                size="small"
+                type="warning"
+              >
+                管理员
+              </el-tag>
+            </div>
+            <el-button
+              v-if="canRemove(member)"
+              type="danger"
+              text
+              size="small"
+              @click="handleKick(member.user_id)"
+            >
+              移出
+            </el-button>
+          </div>
         </div>
       </div>
 
@@ -151,7 +147,6 @@ function formatDate(isoString) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-// ── 操作 ──────────────────
 async function handleKick(userId) {
   try {
     await ElMessageBox.confirm('确定要移除该成员吗？', '确认')
@@ -162,9 +157,7 @@ async function handleKick(userId) {
     } else {
       ElMessage.error(res.message)
     }
-  } catch (e) {
-    // 取消操作
-  }
+  } catch {}
 }
 
 async function handleLeave() {
@@ -182,9 +175,7 @@ async function handleLeave() {
     } else {
       ElMessage.error(res.message)
     }
-  } catch (e) {
-    // 取消操作
-  }
+  } catch {}
 }
 
 async function handleDismiss() {
@@ -202,9 +193,7 @@ async function handleDismiss() {
     } else {
       ElMessage.error(res.message)
     }
-  } catch (e) {
-    // 取消操作
-  }
+  } catch {}
 }
 
 function handleClose() {
@@ -218,56 +207,68 @@ function handleClose() {
 }
 
 .group-manage-section {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .section-title {
   font-size: 13px;
-  color: #999;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #f0f0f0;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-border-light);
+  font-weight: 500;
 }
 
 .group-info-row {
   display: flex;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-1);
 }
 
 .group-info-row .label {
   width: 70px;
-  color: #999;
+  color: var(--color-text-muted);
   font-size: 13px;
 }
 
 .group-info-row .value {
   font-size: 13px;
+  color: var(--color-text);
+}
+
+.member-list {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .member-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f8f8f8;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.member-item:last-child {
+  border-bottom: none;
 }
 
 .member-info {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .member-name {
   font-size: 13px;
+  color: var(--color-text);
 }
 
 .group-manage-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-light);
 }
 </style>

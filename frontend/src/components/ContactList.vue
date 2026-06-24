@@ -3,6 +3,7 @@
     <!-- 在线好友 -->
     <div v-if="onlineFriends.length > 0" class="friend-group">
       <div class="group-header">
+        <span class="group-dot online"></span>
         <span class="group-title">在线 - {{ onlineFriends.length }}人</span>
       </div>
       <div
@@ -12,19 +13,13 @@
         @contextmenu.prevent="showContextMenu($event, item)"
       >
         <div class="friend-avatar">
-          <el-badge
-            is-dot
-            :type="'success'"
-            :offset="[0, 36]"
-          >
-            <el-avatar :size="42">
-              {{ getAvatarText(item.friend) }}
-            </el-avatar>
-          </el-badge>
+          <el-avatar :size="40">
+            {{ getAvatarText(item.friend) }}
+          </el-avatar>
+          <span class="status-dot online"></span>
         </div>
         <div class="friend-info">
           <span class="friend-name">{{ item.friend?.nickname || item.friend?.username }}</span>
-          <span class="friend-status online">在线</span>
         </div>
         <div class="friend-actions">
           <el-button link type="primary" size="small" @click="$emit('send-message', item)">
@@ -37,6 +32,7 @@
     <!-- 离线好友 -->
     <div v-if="offlineFriends.length > 0" class="friend-group">
       <div class="group-header">
+        <span class="group-dot offline"></span>
         <span class="group-title">离线 - {{ offlineFriends.length }}人</span>
       </div>
       <div
@@ -46,19 +42,13 @@
         @contextmenu.prevent="showContextMenu($event, item)"
       >
         <div class="friend-avatar">
-          <el-badge
-            is-dot
-            :type="'info'"
-            :offset="[0, 36]"
-          >
-            <el-avatar :size="42">
-              {{ getAvatarText(item.friend) }}
-            </el-avatar>
-          </el-badge>
+          <el-avatar :size="40">
+            {{ getAvatarText(item.friend) }}
+          </el-avatar>
+          <span class="status-dot offline"></span>
         </div>
         <div class="friend-info">
           <span class="friend-name">{{ item.friend?.nickname || item.friend?.username }}</span>
-          <span class="friend-status offline">离线</span>
         </div>
         <div class="friend-actions">
           <el-button link type="primary" size="small" @click="$emit('send-message', item)">
@@ -156,7 +146,6 @@ function handleSendMessage() {
 }
 
 function handleViewProfile() {
-  // TODO: 查看好友资料 - 可由成员A的 Profile.vue 支持
   hideContextMenu()
 }
 
@@ -167,7 +156,6 @@ function handleDeleteFriend() {
   hideContextMenu()
 }
 
-// 点击页面其他位置关闭右键菜单
 function onDocumentClick() {
   hideContextMenu()
 }
@@ -180,7 +168,6 @@ onUnmounted(() => {
   document.removeEventListener('click', onDocumentClick)
 })
 
-// 头像文字
 function getAvatarText(friend) {
   if (!friend) return 'U'
   return (friend.nickname || friend.username || 'U')[0].toUpperCase()
@@ -189,19 +176,33 @@ function getAvatarText(friend) {
 
 <style scoped>
 .contact-list {
-  padding-bottom: 16px;
+  padding-bottom: var(--space-4);
 }
 
 /* 分组 */
 .friend-group {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 .group-header {
-  padding: 12px 20px 6px;
+  padding: var(--space-3) var(--space-5) var(--space-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.group-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.group-dot.online {
+  background-color: var(--color-success);
+}
+.group-dot.offline {
+  background-color: var(--color-text-muted);
 }
 .group-title {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
   font-weight: 500;
 }
 
@@ -209,17 +210,18 @@ function getAvatarText(friend) {
 .friend-item {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
-  gap: 12px;
+  padding: var(--space-2) var(--space-5);
+  gap: var(--space-3);
   cursor: pointer;
-  transition: background 0.15s;
-  border-bottom: 1px solid #fafafa;
+  transition: background var(--transition-fast);
+  border-left: 3px solid transparent;
 }
 .friend-item:hover {
-  background: #f0f5ff;
+  background: var(--color-surface-hover);
+  border-left-color: var(--color-border);
 }
 .friend-item.offline {
-  opacity: 0.7;
+  opacity: 0.65;
 }
 .friend-item.offline:hover {
   opacity: 1;
@@ -227,6 +229,23 @@ function getAvatarText(friend) {
 
 .friend-avatar {
   flex-shrink: 0;
+  position: relative;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+}
+.status-dot.online {
+  background-color: var(--color-success);
+}
+.status-dot.offline {
+  background-color: var(--color-text-muted);
 }
 
 .friend-info {
@@ -237,20 +256,12 @@ function getAvatarText(friend) {
   gap: 2px;
 }
 .friend-name {
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 500;
+  color: var(--color-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.friend-status {
-  font-size: 11px;
-}
-.friend-status.online {
-  color: #67c23a;
-}
-.friend-status.offline {
-  color: #c0c4cc;
 }
 
 .friend-actions {
@@ -258,40 +269,42 @@ function getAvatarText(friend) {
 }
 
 .loading-wrap {
-  padding: 20px;
+  padding: var(--space-5);
 }
 
 /* 右键菜单 */
 .context-menu {
   position: fixed;
   z-index: 9999;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-  padding: 4px 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-1) 0;
   min-width: 160px;
+  border: 1px solid var(--color-border-light);
 }
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
   font-size: 13px;
+  color: var(--color-text);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background var(--transition-fast);
 }
 .menu-item:hover {
-  background: #f0f5ff;
+  background: var(--color-selected);
 }
 .menu-item.danger {
-  color: #f56c6c;
+  color: var(--color-danger);
 }
 .menu-item.danger:hover {
-  background: #fef0f0;
+  background: #FEF2F2;
 }
 .menu-divider {
   height: 1px;
-  background: #f0f0f0;
-  margin: 4px 0;
+  background: var(--color-border-light);
+  margin: var(--space-1) 0;
 }
 </style>

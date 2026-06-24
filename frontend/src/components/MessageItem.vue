@@ -2,7 +2,7 @@
   <div class="message-item" :class="{ 'is-self': isSelf }">
     <!-- 头像 -->
     <el-avatar
-      :size="32"
+      :size="34"
       :src="message.sender_avatar"
       class="message-avatar"
     >
@@ -31,7 +31,7 @@
       <!-- 文件消息 -->
       <div v-else-if="message.msg_type === 2" class="message-file">
         <div class="message-bubble file-bubble">
-          <el-icon :size="20"><Document /></el-icon>
+          <el-icon :size="18"><Document /></el-icon>
           <span class="file-name">{{ message.content }}</span>
           <el-button
             text
@@ -107,7 +107,7 @@ function downloadFile(fileId) {
 <style scoped>
 .message-item {
   display: flex;
-  gap: 10px;
+  gap: var(--space-2);
   align-items: flex-start;
 }
 
@@ -124,37 +124,39 @@ function downloadFile(fileId) {
 }
 
 .message-sender {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
   margin-bottom: 2px;
   margin-left: 2px;
 }
 
 .message-system {
   text-align: center;
-  font-size: 12px;
-  color: #999;
-  padding: 4px 12px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  padding: var(--space-1) var(--space-3);
 }
 
 .message-bubble {
   padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
   line-height: 1.5;
   word-break: break-word;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--color-chat-other);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
 }
 
 .message-item.is-self .message-bubble {
-  background-color: #95ec69;
+  background-color: var(--color-primary);
+  color: #fff;
 }
 
 .message-file .file-bubble {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .file-name {
@@ -167,16 +169,16 @@ function downloadFile(fileId) {
 .message-image-content {
   max-width: 200px;
   max-height: 200px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
 }
 
 .message-meta {
-  font-size: 11px;
-  color: #bbb;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
   margin-top: 2px;
   display: flex;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .message-item.is-self .message-meta {

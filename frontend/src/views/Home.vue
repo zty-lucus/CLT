@@ -59,7 +59,7 @@
           @click="selectConversation(conv)"
         >
           <el-avatar
-            :size="40"
+            :size="42"
             :src="conv.avatar"
             class="conversation-avatar"
           >
@@ -108,7 +108,15 @@
       </template>
       <template v-else>
         <div class="no-conversation">
-          <el-empty description="选择一个会话开始聊天" :image-size="120" />
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <h3>选择一个会话</h3>
+            <p>从左侧列表选择会话开始聊天</p>
+          </div>
         </div>
       </template>
     </main>
@@ -214,15 +222,15 @@ function handleLogout() {
 .home-page {
   display: flex;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg);
 }
 
 /* ── 左侧边栏 ───────────── */
 .home-sidebar {
   width: 320px;
   min-width: 320px;
-  background-color: #fff;
-  border-right: 1px solid #e8e8e8;
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
 }
@@ -230,15 +238,16 @@ function handleLogout() {
 .sidebar-header {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  gap: 10px;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-light);
+  gap: var(--space-3);
 }
 
 .sidebar-header-name {
   flex: 1;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -247,15 +256,20 @@ function handleLogout() {
 .sidebar-header-menu {
   cursor: pointer;
   font-size: 18px;
-  color: #666;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.sidebar-header-menu:hover {
+  color: var(--color-text);
 }
 
 .sidebar-search {
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
 }
 
 .sidebar-tabs {
-  padding: 0 16px;
+  padding: 0 var(--space-4);
 }
 
 .sidebar-tabs :deep(.el-tabs__header) {
@@ -270,18 +284,20 @@ function handleLogout() {
 .conversation-item {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: var(--space-3) var(--space-5);
   cursor: pointer;
-  transition: background-color 0.2s;
-  gap: 12px;
+  transition: background-color var(--transition-fast);
+  gap: var(--space-3);
+  border-left: 3px solid transparent;
 }
 
 .conversation-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color-surface-hover);
 }
 
 .conversation-item.active {
-  background-color: #e6f7ff;
+  background-color: var(--color-selected);
+  border-left-color: var(--color-primary);
 }
 
 .conversation-avatar {
@@ -300,8 +316,9 @@ function handleLogout() {
 }
 
 .conversation-name {
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 500;
+  color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -309,8 +326,8 @@ function handleLogout() {
 }
 
 .conversation-time {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
@@ -318,12 +335,12 @@ function handleLogout() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 .conversation-last-msg {
   font-size: 13px;
-  color: #999;
+  color: var(--color-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -343,8 +360,9 @@ function handleLogout() {
 
 .contacts-link {
   text-decoration: none;
-  color: #409eff;
-  font-size: 15px;
+  color: var(--color-primary);
+  font-size: var(--text-md);
+  font-weight: 500;
 }
 
 /* ── 右侧主区域 ─────────── */
@@ -360,5 +378,34 @@ function handleLogout() {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-xl);
+  background: var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-5);
+  color: var(--color-text-muted);
+}
+
+.empty-state h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-2);
+}
+
+.empty-state p {
+  font-size: var(--text-base);
+  margin: 0;
 }
 </style>

@@ -19,7 +19,7 @@
       />
 
       <div v-if="!uploading" class="drop-content">
-        <el-icon :size="48" color="#c0c4cc"><UploadFilled /></el-icon>
+        <el-icon :size="40" :color="'var(--color-text-muted)'"><UploadFilled /></el-icon>
         <p class="drop-text">点击选择文件或拖拽文件到此处</p>
         <p class="drop-hint">
           支持 {{ acceptHint }}，单个文件最大 {{ maxSizeText }}
@@ -27,7 +27,7 @@
         <p v-if="multiple" class="drop-hint">支持同时选择多个文件（最多10个）</p>
       </div>
       <div v-else class="drop-content">
-        <el-icon :size="48" color="#409eff" class="is-loading"><UploadFilled /></el-icon>
+        <el-icon :size="40" color="var(--color-primary)" class="is-loading"><UploadFilled /></el-icon>
         <p class="drop-text">正在上传...</p>
       </div>
     </div>
@@ -36,7 +36,7 @@
     <div v-if="selectedFiles.length > 0 && !uploading" class="file-list">
       <div v-for="(file, index) in selectedFiles" :key="index" class="file-item">
         <div class="file-info">
-          <el-icon :size="24" color="#409eff">
+          <el-icon :size="20" color="var(--color-primary)">
             <Document />
           </el-icon>
           <div class="file-detail">
@@ -61,18 +61,18 @@
         <span>上传进度</span>
         <span>{{ progress }}%</span>
       </div>
-      <el-progress :percentage="progress" :stroke-width="12" :show-text="false" />
+      <el-progress :percentage="progress" :stroke-width="8" :show-text="false" />
       <p class="progress-file">{{ uploadingFileName }}</p>
     </div>
 
-    <!-- 已上传文件列表（展示已上传成功的文件） -->
+    <!-- 已上传文件列表 -->
     <div v-if="uploadedFiles.length > 0" class="uploaded-files">
       <div class="uploaded-header">
         <span>已上传的文件 ({{ uploadedFiles.length }})</span>
       </div>
       <div v-for="file in uploadedFiles" :key="file.id" class="uploaded-item">
         <div class="file-info">
-          <el-icon :size="24" :color="getFileIconColor(file.file_type)">
+          <el-icon :size="20" :color="getFileIconColor(file.file_type)">
             <component :is="getFileIcon(file.file_type)" />
           </el-icon>
           <div class="file-detail">
@@ -108,63 +108,33 @@ import { ElMessage } from 'element-plus'
 import { fileApi } from '@/api/file'
 
 const props = defineProps({
-  /** 是否支持多文件选择 */
-  multiple: {
-    type: Boolean,
-    default: false,
-  },
-  /** 允许的文件类型（MIME类型，逗号分隔） */
-  accept: {
-    type: String,
-    default: '',
-  },
-  /** 最大文件大小（MB），默认50MB */
-  maxSize: {
-    type: Number,
-    default: 50,
-  },
-  /** 是否显示已上传的文件列表 */
-  showUploaded: {
-    type: Boolean,
-    default: false,
-  },
+  multiple: { type: Boolean, default: false },
+  accept: { type: String, default: '' },
+  maxSize: { type: Number, default: 50 },
+  showUploaded: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['upload-success', 'upload-error', 'file-delete'])
 
-// 文件输入
 const fileInputRef = ref(null)
-
-// 拖拽状态
 const isDragover = ref(false)
-
-// 上传状态
 const uploading = ref(false)
 const progress = ref(0)
 const uploadingFileName = ref('')
-
-// 文件列表
 const selectedFiles = ref([])
 const uploadedFiles = ref([])
 
-// 计算属性
-const maxSizeText = computed(() => {
-  return props.maxSize >= 1024
-    ? `${(props.maxSize / 1024).toFixed(1)}GB`
-    : `${props.maxSize}MB`
-})
+const maxSizeText = computed(() =>
+  props.maxSize >= 1024 ? `${(props.maxSize / 1024).toFixed(1)}GB` : `${props.maxSize}MB`
+)
 
-const acceptHint = computed(() => {
-  if (props.accept) return props.accept
-  return '文档、图片、压缩包、音视频等常见格式'
-})
+const acceptHint = computed(() =>
+  props.accept || '文档、图片、压缩包、音视频等常见格式'
+)
 
-const acceptString = computed(() => {
-  if (props.accept) return props.accept
-  return '.doc,.docx,.pdf,.txt,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.bmp,.svg,.webp,.zip,.rar,.7z,.tar,.gz,.mp3,.mp4,.avi,.mov,.wav,.flac'
-})
-
-// ============ 文件选择 ============
+const acceptString = computed(() =>
+  props.accept || '.doc,.docx,.pdf,.txt,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.bmp,.svg,.webp,.zip,.rar,.7z,.tar,.gz,.mp3,.mp4,.avi,.mov,.wav,.flac'
+)
 
 function triggerFileInput() {
   if (uploading.value) return
@@ -174,7 +144,6 @@ function triggerFileInput() {
 function handleFileSelect(event) {
   const files = Array.from(event.target.files || [])
   addFiles(files)
-  // 重置 input，以便可以重复选择同一文件
   event.target.value = ''
 }
 
@@ -190,19 +159,14 @@ function handleDrop(event) {
 
 function addFiles(files) {
   if (files.length === 0) return
-
-  // 检查数量限制
   if (!props.multiple && files.length > 1) {
     ElMessage.warning('不支持多文件选择，仅选择第一个文件')
     files = [files[0]]
   }
-
   if (props.multiple && selectedFiles.value.length + files.length > 10) {
     ElMessage.warning('单次最多选择10个文件')
     return
   }
-
-  // 校验文件大小
   const maxBytes = props.maxSize * 1024 * 1024
   for (const file of files) {
     if (file.size > maxBytes) {
@@ -214,7 +178,6 @@ function addFiles(files) {
       return
     }
   }
-
   selectedFiles.value = [...selectedFiles.value, ...files]
 }
 
@@ -226,17 +189,12 @@ function clearFiles() {
   selectedFiles.value = []
 }
 
-// ============ 文件上传 ============
-
 async function startUpload() {
   if (selectedFiles.value.length === 0) return
-
   uploading.value = true
   progress.value = 0
-
   try {
     if (selectedFiles.value.length === 1 && !props.multiple) {
-      // 单文件上传
       const file = selectedFiles.value[0]
       uploadingFileName.value = file.name
       const res = await fileApi.upload(file, (event) => {
@@ -248,7 +206,6 @@ async function startUpload() {
       ElMessage.success(`文件「${file.name}」上传成功`)
       emit('upload-success', res.data)
     } else {
-      // 批量上传
       uploadingFileName.value = `正在上传 ${selectedFiles.value.length} 个文件...`
       const res = await fileApi.uploadMultiple(selectedFiles.value, (event) => {
         if (event.total) {
@@ -267,23 +224,17 @@ async function startUpload() {
         })
       }
     }
-    // 清已选文件列表
     clearFiles()
-  } catch {
-    // 错误已在拦截器中处理
-  } finally {
+  } catch {} finally {
     uploading.value = false
     progress.value = 0
     uploadingFileName.value = ''
   }
 }
 
-// ============ 已上传文件操作 ============
-
 async function handleDownload(file) {
   try {
     const res = await fileApi.downloadFile(file.id)
-    // 创建 Blob 并触发下载
     const blob = res.data || res
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -295,7 +246,6 @@ async function handleDownload(file) {
     window.URL.revokeObjectURL(url)
     ElMessage.success('开始下载')
   } catch {
-    // 尝试直接打开下载链接
     const downloadUrl = fileApi.getDownloadUrl(file.id)
     window.open(downloadUrl, '_blank')
   }
@@ -307,12 +257,8 @@ async function handleDelete(file) {
     uploadedFiles.value = uploadedFiles.value.filter((f) => f.id !== file.id)
     ElMessage.success('文件已删除')
     emit('file-delete', file.id)
-  } catch {
-    // 错误已在拦截器中处理
-  }
+  } catch {}
 }
-
-// ============ 加载已上传文件 ============
 
 async function loadUploadedFiles() {
   if (!props.showUploaded) return
@@ -327,8 +273,6 @@ async function loadUploadedFiles() {
 onMounted(() => {
   loadUploadedFiles()
 })
-
-// ============ 工具函数 ============
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes}B`
@@ -350,9 +294,9 @@ function getFileIcon(ext) {
 function getFileIconColor(ext) {
   const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp']
   const archiveTypes = ['zip', 'rar', '7z', 'tar', 'gz']
-  if (imageTypes.includes(ext)) return '#67c23a'
-  if (archiveTypes.includes(ext)) return '#e6a23c'
-  return '#409eff'
+  if (imageTypes.includes(ext)) return 'var(--color-success)'
+  if (archiveTypes.includes(ext)) return 'var(--color-warning)'
+  return 'var(--color-primary)'
 }
 </script>
 
@@ -363,47 +307,47 @@ function getFileIconColor(ext) {
 
 /* 拖拽区域 */
 .upload-drop-zone {
-  border: 2px dashed #dcdfe6;
-  border-radius: 8px;
-  padding: 32px 20px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-8) var(--space-5);
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s;
-  background: #fafafa;
+  transition: all var(--transition-base);
+  background: var(--color-surface-hover);
 }
 .upload-drop-zone:hover {
-  border-color: #409eff;
-  background: #f0f5ff;
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
 }
 .upload-drop-zone.is-dragover {
-  border-color: #409eff;
-  background: #e6f0ff;
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
 }
 .upload-drop-zone.is-uploading {
   cursor: not-allowed;
-  border-color: #409eff;
-  background: #f0f5ff;
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
 }
 .drop-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .drop-text {
-  font-size: 14px;
-  color: #606266;
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
   margin: 0;
 }
 .drop-hint {
-  font-size: 12px;
-  color: #c0c4cc;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
   margin: 0;
 }
 
 /* 已选文件列表 */
 .file-list {
-  margin-top: 12px;
+  margin-top: var(--space-3);
   max-height: 200px;
   overflow-y: auto;
 }
@@ -411,19 +355,19 @@ function getFileIconColor(ext) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border: 1px solid #ebeef5;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  transition: background 0.2s;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-1);
+  transition: background var(--transition-fast);
 }
 .file-item:hover {
-  background: #f5f7fa;
+  background: var(--color-surface-hover);
 }
 .file-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   flex: 1;
   min-width: 0;
 }
@@ -434,66 +378,66 @@ function getFileIconColor(ext) {
 }
 .file-name {
   font-size: 13px;
-  color: #303133;
+  color: var(--color-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .file-size {
-  font-size: 11px;
-  color: #909399;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
   margin-top: 2px;
 }
 
 /* 上传进度 */
 .upload-progress {
-  margin-top: 16px;
+  margin-top: var(--space-4);
 }
 .progress-info {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  color: #606266;
-  margin-bottom: 6px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
 }
 .progress-file {
-  font-size: 12px;
-  color: #909399;
-  margin-top: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
   text-align: center;
 }
 
 /* 已上传文件 */
 .uploaded-files {
-  margin-top: 16px;
-  border: 1px solid #ebeef5;
-  border-radius: 8px;
+  margin-top: var(--space-4);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 .uploaded-header {
-  padding: 10px 16px;
-  background: #f5f7fa;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg);
   font-size: 13px;
-  color: #606266;
-  border-bottom: 1px solid #ebeef5;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-light);
 }
 .uploaded-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid #f5f5f5;
-  transition: background 0.2s;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background var(--transition-fast);
 }
 .uploaded-item:last-child {
   border-bottom: none;
 }
 .uploaded-item:hover {
-  background: #fafafa;
+  background: var(--color-surface-hover);
 }
 .file-actions {
   display: flex;
-  gap: 4px;
+  gap: var(--space-1);
   flex-shrink: 0;
 }
 
@@ -501,7 +445,7 @@ function getFileIconColor(ext) {
 .upload-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 16px;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 </style>

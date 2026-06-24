@@ -64,7 +64,7 @@
           accept=".doc,.docx,.pdf,.txt,.jpg,.jpeg,.png,.gif,.zip,.rar"
         >
           <el-button text>
-            <el-icon :size="20"><Link /></el-icon>
+            <el-icon :size="18"><Link /></el-icon>
           </el-button>
         </el-upload>
       </div>
@@ -228,7 +228,7 @@ function scrollToBottom() {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--color-surface);
 }
 
 /* ── 顶部标题栏 ─────────── */
@@ -236,15 +236,15 @@ function scrollToBottom() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  border-bottom: 1px solid #e8e8e8;
-  background-color: #fafafa;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
 }
 
 .chat-header-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .chat-header-text {
@@ -253,30 +253,31 @@ function scrollToBottom() {
 }
 
 .chat-header-name {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .chat-header-status {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 /* ── 消息列表 ───────────── */
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 20px;
-  background-color: #f5f5f5;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--color-bg);
 }
 
 .load-more {
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .message-wrapper {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .message-bottom {
@@ -285,23 +286,24 @@ function scrollToBottom() {
 
 /* ── 输入区域 ───────────── */
 .chat-input-area {
-  border-top: 1px solid #e8e8e8;
-  background-color: #fff;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
 }
 
 .chat-input-tools {
-  padding: 8px 16px 0;
+  padding: var(--space-2) var(--space-4) 0;
 }
 
 .chat-input-box {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  padding: 8px 16px 12px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4) var(--space-3);
 }
 
 .chat-input-box :deep(.el-textarea__inner) {
-  font-size: 14px;
+  font-size: var(--text-base);
   line-height: 1.5;
+  border-radius: var(--radius-md);
 }
 </style>

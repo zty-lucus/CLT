@@ -187,26 +187,19 @@ import ContactList from '@/components/ContactList.vue'
 
 const friendStore = useFriendStore()
 
-// Tab 状态
 const activeTab = ref('friends')
-
-// 搜索状态
 const searchKeyword = ref('')
 const searchResults = ref([])
 const searchLoading = ref(false)
 const hasSearched = ref(false)
 
-// 添加好友状态
 const addDialogVisible = ref(false)
 const addTargetUser = ref(null)
 const addLoading = ref(false)
 const addingUserId = ref(null)
 const addForm = ref({ message: '' })
 
-// 加载状态
 const loading = ref(false)
-
-// ============ 生命周期 ============
 
 onMounted(async () => {
   loading.value = true
@@ -217,13 +210,9 @@ onMounted(async () => {
   loading.value = false
 })
 
-// ============ 搜索 ============
-
 async function handleSearch() {
   const keyword = searchKeyword.value.trim()
-  if (keyword.length < 2) {
-    return
-  }
+  if (keyword.length < 2) return
   hasSearched.value = true
   searchLoading.value = true
   try {
@@ -232,8 +221,6 @@ async function handleSearch() {
     searchLoading.value = false
   }
 }
-
-// ============ 添加好友 ============
 
 function handleAddFriend(user) {
   addTargetUser.value = user
@@ -248,7 +235,6 @@ async function confirmAddFriend() {
   try {
     await friendStore.sendRequest(addTargetUser.value.id, addForm.value.message)
     addDialogVisible.value = false
-    // 从搜索结果移除
     searchResults.value = searchResults.value.filter(
       u => u.id !== addTargetUser.value.id
     )
@@ -258,8 +244,6 @@ async function confirmAddFriend() {
   }
 }
 
-// ============ 好友申请处理 ============
-
 async function handleAccept(friendshipId) {
   await friendStore.acceptRequest(friendshipId)
 }
@@ -267,8 +251,6 @@ async function handleAccept(friendshipId) {
 async function handleReject(friendshipId) {
   await friendStore.rejectRequest(friendshipId)
 }
-
-// ============ 删除好友 ============
 
 async function handleDeleteFriend(friendship) {
   try {
@@ -282,12 +264,8 @@ async function handleDeleteFriend(friendship) {
       }
     )
     await friendStore.deleteFriend(friendship.id)
-  } catch {
-    // 用户取消
-  }
+  } catch {}
 }
-
-// ============ 工具函数 ============
 
 function formatTime(isoString) {
   if (!isoString) return ''
@@ -306,21 +284,23 @@ function formatTime(isoString) {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--color-surface);
 }
 .contacts-header {
-  padding: 16px 20px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--space-4) var(--space-5) 0;
+  border-bottom: 1px solid var(--color-border-light);
 }
 .contacts-header h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
 }
 .contacts-tabs {
   margin-bottom: -1px;
 }
 .badge-item {
-  margin-left: 6px;
+  margin-left: var(--space-1);
 }
 .tab-content {
   flex: 1;
@@ -330,8 +310,8 @@ function formatTime(isoString) {
 
 /* 搜索 */
 .search-box {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 /* 搜索结果 */
@@ -342,55 +322,57 @@ function formatTime(isoString) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  border-bottom: 1px solid #f5f5f5;
-  transition: background 0.2s;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background var(--transition-fast);
 }
 .search-user-item:hover {
-  background: #fafafa;
+  background: var(--color-surface-hover);
 }
 .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 .user-detail {
   display: flex;
   flex-direction: column;
 }
 .user-name {
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 500;
+  color: var(--color-text);
 }
 .user-username {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 /* 好友申请 */
 .request-section {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 .section-title {
-  padding: 12px 20px 8px;
-  font-size: 14px;
-  color: #666;
+  padding: var(--space-3) var(--space-5) var(--space-2);
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 .request-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  border-bottom: 1px solid #f5f5f5;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background var(--transition-fast);
 }
 .request-item:hover {
-  background: #fafafa;
+  background: var(--color-surface-hover);
 }
 .request-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex: 1;
 }
 .request-detail {
@@ -399,20 +381,21 @@ function formatTime(isoString) {
   gap: 2px;
 }
 .request-name {
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 500;
+  color: var(--color-text);
 }
 .request-msg {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 .request-time {
-  font-size: 11px;
-  color: #ccc;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
 }
 .request-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   flex-shrink: 0;
 }
 </style>
