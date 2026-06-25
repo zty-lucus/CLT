@@ -10,6 +10,7 @@ class Conversation(db.Model):
     name: str = db.Column(db.String(100), nullable=True)
     avatar: str = db.Column(db.String(255), nullable=True)
     creator_id: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    announcement: str = db.Column(db.Text, nullable=True, default='')
     created_at: datetime = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at: datetime = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -107,7 +107,7 @@ import { useChatStore } from '@/stores/chat'
 import { useConversationStore } from '@/stores/conversation'
 import { sendSocketMessage, sendTypingEvent } from '@/socket'
 import { getConversationDetailApi } from '@/api/chat'
-import { uploadFileApi } from '@/api/file'
+import { fileApi } from '@/api/file'
 import MessageItem from '@/components/MessageItem.vue'
 import GroupManage from '@/components/GroupManage.vue'
 
@@ -189,7 +189,7 @@ async function handleFileUpload(file) {
   const formData = new FormData()
   formData.append('file', file)
   try {
-    const res = await uploadFileApi(formData)
+    const res = await fileApi.upload(file)
     if (res.code === 0) {
       sendSocketMessage({
         conversation_id: chatStore.currentConversationId,

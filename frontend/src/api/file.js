@@ -42,7 +42,7 @@ export const fileApi = {
     const token = localStorage.getItem('token') || ''
     // 通过后端认证，使用 Bearer Token
     // 注意：文件下载通过浏览器直接访问，需要在请求头带 Token
-    return `/api/files/${fileId}/download?inline=${inline ? '1' : '0'}`
+    return `http://localhost:5000/api/files/${fileId}/download?inline=${inline ? '1' : '0'}`
   },
 
   /**

@@ -44,7 +44,7 @@ def login(username: str, password: str) -> dict:
     if not user or not check_password_hash(user.password_hash, password):
         return {'code': 1004, 'message': '用户名或密码错误'}
 
-    token = create_access_token(identity=user.id)
+    token = create_access_token(identity=str(user.id))
 
     return {
         'code': 0,

@@ -1,9 +1,12 @@
 from datetime import datetime
 from flask import request
-from flask_socketio import emit
+from flask_socketio import emit, join_room
 from flask_jwt_extended import decode_token
 from app.extensions import db, socketio
 from app.models.user import User
+
+# 存储 sid -> user_id 的映射，用于 disconnect 时获取用户信息
+_sid_user_map = {}
 
 
 @socketio.on('connect')
@@ -18,11 +21,11 @@ def handle_connect(auth):
 
     try:
         payload = decode_token(token)
-        user_id = payload['sub']
+        user_id = int(payload['sub'])
     except Exception:
         return False
 
-    user = db.session.get(User, int(user_id))
+    user = db.session.get(User, user_id)
     if not user:
         return False
 
@@ -30,7 +33,9 @@ def handle_connect(auth):
     user.last_seen = datetime.utcnow()
     db.session.commit()
 
-    from flask_socketio import join_room
+    # 记录 sid -> user_id 映射
+    _sid_user_map[request.sid] = user_id
+
     join_room(f'user_{user.id}')
 
     emit('user_online', {'user_id': user.id, 'username': user.username}, broadcast=True)
@@ -38,7 +43,7 @@ def handle_connect(auth):
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    user_id = _get_user_id_from_session()
+    user_id = _sid_user_map.pop(request.sid, None)
     if not user_id:
         return
 
@@ -49,14 +54,3 @@ def handle_disconnect():
         db.session.commit()
 
     emit('user_offline', {'user_id': user_id}, broadcast=True)
-
-
-def _get_user_id_from_session():
-    try:
-        token = request.args.get('token')
-        if token:
-            payload = decode_token(token)
-            return int(payload['sub'])
-    except Exception:
-        pass
-    return None

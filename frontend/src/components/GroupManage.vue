@@ -75,7 +75,7 @@
       <!-- 底部操作 -->
       <div class="group-manage-actions">
         <el-button
-          v-if="isAdmin"
+          v-if="isOwner"
           type="danger"
           plain
           @click="handleDismiss"

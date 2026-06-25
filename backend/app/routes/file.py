@@ -6,12 +6,33 @@
 import os
 
 from flask import Blueprint, current_app, request, send_file
+from flask_jwt_extended import decode_token
 
 from app.services.file_service import FileService
 from app.utils.auth import jwt_required_with_user
 from app.utils.response import error, success
 
 file_bp = Blueprint('file', __name__)
+
+
+def _get_user_id_from_request():
+    """从请求中获取用户ID，支持 Authorization header 和 query param token"""
+    from flask_jwt_extended import verify_jwt_in_request
+    try:
+        verify_jwt_in_request()
+        from flask_jwt_extended import get_jwt_identity
+        return int(get_jwt_identity())
+    except Exception:
+        pass
+    # 尝试从 query param 获取
+    token = request.args.get('token')
+    if token:
+        try:
+            payload = decode_token(token)
+            return int(payload.get('sub'))
+        except Exception:
+            pass
+    return None
 
 
 # ============================================================
@@ -89,13 +110,17 @@ def upload_multiple_files(current_user_id):
 # ============================================================
 
 @file_bp.route('/<int:file_id>/download', methods=['GET'])
-@jwt_required_with_user
-def download_file(current_user_id, file_id):
+def download_file(file_id):
     """
     下载文件
     GET /api/files/123/download
     支持 ?inline=1 参数用于浏览器内预览
+    支持 ?token=xxx 参数用于认证（兼容 window.open）
     """
+    current_user_id = _get_user_id_from_request()
+    if current_user_id is None:
+        return error(1005, 'Token无效或已过期')
+
     file_record, file_path = FileService.get_file_path(file_id, current_user_id)
     if not file_record:
         return error(1007, '文件不存在')
@@ -168,10 +193,9 @@ def delete_file(current_user_id, file_id):
 
 
 # ============================================================
-# 辅助函数（添加到 FileService 中）
+# 辅助函数
 # ============================================================
 
-# 扩展 FileService 的工具方法
 def _format_size(size_bytes):
     """将字节数格式化为可读的文件大小字符串"""
     if size_bytes < 1024:

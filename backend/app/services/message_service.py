@@ -40,11 +40,30 @@ class MessageService:
                 .order_by(Message.created_at.desc())
                 .first()
             )
+
+            # 单聊：使用对方的昵称和头像
+            conv_name = conv.name
+            conv_avatar = conv.avatar
+            if conv.type == 1 and (not conv_name or not conv_avatar):
+                other_member = (
+                    db.session.query(ConversationMember)
+                    .filter_by(conversation_id=conv.id)
+                    .filter(ConversationMember.user_id != user_id)
+                    .first()
+                )
+                if other_member:
+                    other_user = db.session.query(User).filter_by(id=other_member.user_id).first()
+                    if other_user:
+                        if not conv_name:
+                            conv_name = other_user.nickname or other_user.username
+                        if not conv_avatar:
+                            conv_avatar = other_user.avatar
+
             result.append({
                 'id': conv.id,
                 'type': conv.type,
-                'name': conv.name,
-                'avatar': conv.avatar,
+                'name': conv_name or '',
+                'avatar': conv_avatar or '',
                 'unread_count': membership.unread_count if membership else 0,
                 'last_message': {
                     'content': last_message.content if last_message else '',

@@ -65,7 +65,7 @@ const handleLogin = async () => {
   try {
     await store.login(form.username, form.password)
     ElMessage.success('登录成功')
-    router.push('/profile')
+    router.push('/home')
   } catch (e) {
     // error handled by interceptor
   } finally {

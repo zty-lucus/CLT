@@ -7,21 +7,21 @@ import request from './request'
  * 获取会话列表
  */
 export function getConversationsApi() {
-  return request.get('/api/conversations')
+  return request.get('/conversations')
 }
 
 /**
  * 获取会话详情
  */
 export function getConversationDetailApi(conversationId) {
-  return request.get(`/api/conversations/${conversationId}`)
+  return request.get(`/conversations/${conversationId}`)
 }
 
 /**
  * 创建单聊会话
  */
 export function createPrivateConversationApi(targetId) {
-  return request.post('/api/conversations/private', {
+  return request.post('/conversations/private', {
     target_id: targetId,
   })
 }
@@ -31,7 +31,7 @@ export function createPrivateConversationApi(targetId) {
  */
 export function getMessagesApi(conversationId, page = 1, perPage = 20) {
   return request.get(
-    `/api/conversations/${conversationId}/messages`,
+    `/conversations/${conversationId}/messages`,
     { params: { page, per_page: perPage } }
   )
 }
@@ -40,7 +40,7 @@ export function getMessagesApi(conversationId, page = 1, perPage = 20) {
  * 标记会话已读
  */
 export function markReadApi(conversationId) {
-  return request.post('/api/conversations/read', {
+  return request.post('/conversations/read', {
     conversation_id: conversationId,
   })
 }

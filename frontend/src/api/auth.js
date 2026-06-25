@@ -13,8 +13,4 @@ export const authApi = {
   logout() {
     return request.post('/auth/logout')
   },
-  /** 获取当前用户信息 */
-  getMe() {
-    return request.get('/auth/me')
-  },
 }

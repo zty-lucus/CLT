@@ -94,12 +94,15 @@ function formatTime(isoString) {
 }
 
 function getFileUrl(fileId) {
-  return `/api/files/${fileId}/download`
+  const token = localStorage.getItem('token') || ''
+  return `http://localhost:5000/api/files/${fileId}/download?inline=1&token=${token}`
 }
 
 function downloadFile(fileId) {
   if (fileId) {
-    window.open(getFileUrl(fileId), '_blank')
+    const token = localStorage.getItem('token') || ''
+    const url = `http://localhost:5000/api/files/${fileId}/download?token=${token}`
+    window.open(url, '_blank')
   }
 }
 </script>
