@@ -9,8 +9,4 @@ export const userApi = {
   updateProfile(data) {
     return request.put('/users/profile', data)
   },
-  /** 搜索用户 */
-  searchUsers(keyword) {
-    return request.get('/users/search', { params: { keyword } })
-  },
 }

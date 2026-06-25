@@ -9,7 +9,7 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     result = user_service.get_profile(user_id)
     if result['code'] != 0:
         return error(result['code'], result['message'])
@@ -19,7 +19,7 @@ def get_profile():
 @user_bp.route('/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json(silent=True) or {}
 
     result = user_service.update_profile(

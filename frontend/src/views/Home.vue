@@ -126,7 +126,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { Search as SearchIcon } from '@element-plus/icons-vue'
+import { Search as SearchIcon, MoreFilled } from '@element-plus/icons-vue'
 
 import { useUserStore } from '@/stores/user'
 import { useChatStore } from '@/stores/chat'

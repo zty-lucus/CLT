@@ -15,7 +15,7 @@ group_bp = Blueprint('group', __name__)
 @jwt_required()
 def get_groups():
     """获取当前用户的群组列表"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     service = GroupService()
     groups = service.get_user_groups(user_id)
     return success(data=groups, message="获取群组列表成功")
@@ -25,7 +25,7 @@ def get_groups():
 @jwt_required()
 def get_group_detail(group_id):
     """获取群组详情"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     service = GroupService()
     detail = service.get_group_detail(group_id, user_id)
     if detail is None:
@@ -37,7 +37,7 @@ def get_group_detail(group_id):
 @jwt_required()
 def create_group():
     """创建群组"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     name = data.get('name')
     member_ids = data.get('member_ids', [])
@@ -52,7 +52,7 @@ def create_group():
 @jwt_required()
 def update_group(group_id):
     """修改群信息（管理员/群主）"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     name = data.get('name')
     avatar = data.get('avatar')
@@ -68,7 +68,7 @@ def update_group(group_id):
 @jwt_required()
 def get_group_members(group_id):
     """获取群成员列表"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     service = GroupService()
     result = service.get_group_members(group_id, user_id)
     if result is None:
@@ -80,7 +80,7 @@ def get_group_members(group_id):
 @jwt_required()
 def invite_member(group_id):
     """邀请成员加入群组"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     invitee_ids = data.get('user_ids', [])
     if not invitee_ids:
@@ -96,7 +96,7 @@ def invite_member(group_id):
 @jwt_required()
 def remove_member(group_id, target_id):
     """踢出群成员（管理员/群主）"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     service = GroupService()
     result = service.remove_member(group_id, user_id, target_id)
     if result is None:
@@ -108,7 +108,7 @@ def remove_member(group_id, target_id):
 @jwt_required()
 def leave_group(group_id):
     """退出群组"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     service = GroupService()
     result = service.leave_group(group_id, user_id)
     if result is None:
@@ -120,7 +120,7 @@ def leave_group(group_id):
 @jwt_required()
 def dismiss_group(group_id):
     """解散群组（仅群主）"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     service = GroupService()
     result = service.dismiss_group(group_id, user_id)
     if result is None:
