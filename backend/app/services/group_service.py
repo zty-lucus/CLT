@@ -132,7 +132,7 @@ class GroupService:
         # 系统消息
         db.session.add(Message(
             conversation_id=conv.id,
-            sender_id=0,  # 系统消息
+            sender_id=creator_id,
             msg_type=4,
             content='群组已创建',
         ))
@@ -248,7 +248,7 @@ class GroupService:
                 names.append(u.nickname if u else str(mid))
             db.session.add(Message(
                 conversation_id=group_id,
-                sender_id=0,
+                sender_id=user_id,
                 msg_type=4,
                 content=f'{"、".join(names)} 加入了群组',
             ))
@@ -281,7 +281,7 @@ class GroupService:
         db.session.delete(target_membership)
         db.session.add(Message(
             conversation_id=group_id,
-            sender_id=0,
+            sender_id=operator_id,
             msg_type=4,
             content=f'一位成员被移出群组',
         ))
