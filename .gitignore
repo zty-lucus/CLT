@@ -19,8 +19,9 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Word temp files
+# Word temp files & dev logs
 ~$*.docx
+docs/张天阳_个人开发日志.docx
 
 # Uploads
 backend/uploads/*
