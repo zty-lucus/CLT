@@ -65,6 +65,38 @@ campus-im/
 - Node.js 18+
 - MySQL 8.0
 
+### 数据库配置（重要）
+
+本项目不包含任何数据库密码，clone 后需要自行配置。
+
+1. 创建 `.env` 文件：
+
+```bash
+cd backend
+cp .env.example .env   # 或手动创建
+```
+
+2. 编辑 `backend/.env`，填入你的 MySQL 信息：
+
+```env
+DB_USER=root
+DB_PASSWORD=你的MySQL密码
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=campus_im
+SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret-here
+```
+
+3. 创建数据库：
+
+```bash
+mysql -u root -p -e "CREATE DATABASE campus_im CHARACTER SET utf8mb4;"
+```
+
+> **安全说明：** `backend/.env` 已被 `.gitignore` 忽略，不会被提交到仓库。
+> 请勿将个人密码提交到版本控制中。
+
 ### 后端启动
 
 ```bash
@@ -76,10 +108,6 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 安装依赖
 pip install -r requirements.txt
-
-# 配置数据库 (修改 config.py 中的数据库连接信息)
-# 创建数据库
-mysql -u root -p -e "CREATE DATABASE campus_im CHARACTER SET utf8mb4;"
 
 # 初始化数据库表
 flask db init
