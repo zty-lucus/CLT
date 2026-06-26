@@ -4,14 +4,16 @@
     <header class="chat-header">
       <div class="chat-header-info">
         <el-avatar
-          :size="36"
+          :size="38"
           :src="currentConv?.avatar"
+          class="chat-header-avatar"
         >
           {{ displayName?.charAt(0) }}
         </el-avatar>
         <div class="chat-header-text">
           <span class="chat-header-name">{{ displayName }}</span>
           <span class="chat-header-status">
+            <span v-if="!isGroup" class="status-dot"></span>
             {{ isGroup ? `${currentConv?.members?.length || 0} 名成员` : '在线' }}
           </span>
         </div>
@@ -20,6 +22,7 @@
         <el-button
           v-if="isGroup"
           text
+          class="header-action-btn"
           @click="showGroupManage = true"
         >
           群设置
@@ -63,7 +66,7 @@
           :show-file-list="false"
           accept=".doc,.docx,.pdf,.txt,.jpg,.jpeg,.png,.gif,.zip,.rar"
         >
-          <el-button text>
+          <el-button text class="tool-btn">
             <el-icon :size="18"><Link /></el-icon>
           </el-button>
         </el-upload>
@@ -73,7 +76,7 @@
           v-model="inputText"
           type="textarea"
           :rows="3"
-          placeholder="输入消息..."
+          placeholder="输入消息，按 Enter 发送..."
           resize="none"
           @keydown.enter.exact.prevent="sendTextMessage"
           @input="handleTyping"
@@ -82,6 +85,7 @@
           type="primary"
           :disabled="!inputText.trim()"
           :loading="chatStore.sending"
+          class="send-btn"
           @click="sendTextMessage"
         >
           发送
@@ -236,48 +240,79 @@ function scrollToBottom() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--color-border);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border-light);
   background-color: var(--color-surface);
+  flex-shrink: 0;
 }
 
 .chat-header-info {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 12px;
+}
+
+.chat-header-avatar {
+  flex-shrink: 0;
 }
 
 .chat-header-text {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .chat-header-name {
-  font-size: var(--text-md);
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-text);
 }
 
 .chat-header-status {
-  font-size: var(--text-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
   color: var(--color-text-muted);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+.header-action-btn {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  transition: color 200ms ease;
+}
+
+.header-action-btn:hover {
+  color: var(--color-primary);
 }
 
 /* ── 消息列表 ───────────── */
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-4) var(--space-5);
+  padding: 16px 20px;
   background-color: var(--color-bg);
 }
 
 .load-more {
   text-align: center;
-  margin-bottom: var(--space-3);
+  margin-bottom: 12px;
+}
+
+.load-more .el-button {
+  font-size: 13px;
+  color: var(--color-text-muted);
 }
 
 .message-wrapper {
-  margin-bottom: var(--space-4);
+  margin-bottom: 16px;
 }
 
 .message-bottom {
@@ -286,24 +321,53 @@ function scrollToBottom() {
 
 /* ── 输入区域 ───────────── */
 .chat-input-area {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border-light);
   background-color: var(--color-surface);
+  padding: 0 16px 16px;
+  flex-shrink: 0;
 }
 
 .chat-input-tools {
-  padding: var(--space-2) var(--space-4) 0;
+  padding: 8px 4px 0;
+}
+
+.tool-btn {
+  color: var(--color-text-muted);
+  transition: color 200ms ease;
+}
+
+.tool-btn:hover {
+  color: var(--color-primary);
 }
 
 .chat-input-box {
   display: flex;
   align-items: flex-end;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-4) var(--space-3);
+  gap: 12px;
+  padding: 8px 4px 0;
 }
 
 .chat-input-box :deep(.el-textarea__inner) {
-  font-size: var(--text-base);
+  font-size: 14px;
   line-height: 1.5;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 10px 14px;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.chat-input-box :deep(.el-textarea__inner:focus) {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+}
+
+.send-btn {
+  height: 40px;
+  min-width: 72px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
 }
 </style>

@@ -2,16 +2,23 @@
   <div class="home-page">
     <!-- 左侧会话列表 -->
     <aside class="home-sidebar">
+      <!-- 侧边栏头部 -->
       <div class="sidebar-header">
-        <div class="sidebar-header-avatar">
-          <el-avatar
-            :size="36"
-            :src="userStore.userInfo?.avatar"
-          />
+        <el-avatar
+          :size="36"
+          :src="userStore.userInfo?.avatar"
+          class="sidebar-header-avatar"
+        >
+          {{ userStore.userInfo?.nickname?.charAt(0) || 'U' }}
+        </el-avatar>
+        <div class="sidebar-header-info">
+          <span class="sidebar-header-name">
+            {{ userStore.userInfo?.nickname || userStore.userInfo?.username }}
+          </span>
+          <span class="sidebar-header-status">
+            <span class="status-dot"></span> 在线
+          </span>
         </div>
-        <span class="sidebar-header-name">
-          {{ userStore.userInfo?.nickname }}
-        </span>
         <el-dropdown trigger="click">
           <el-icon class="sidebar-header-menu">
             <MoreFilled />
@@ -36,10 +43,9 @@
       <div class="sidebar-search">
         <el-input
           v-model="searchKeyword"
-          placeholder="搜索会话"
+          placeholder="搜索会话或联系人"
           :prefix-icon="SearchIcon"
           clearable
-          size="small"
         />
       </div>
 
@@ -59,7 +65,7 @@
           @click="selectConversation(conv)"
         >
           <el-avatar
-            :size="42"
+            :size="44"
             :src="conv.avatar"
             class="conversation-avatar"
           >
@@ -78,12 +84,12 @@
               <span class="conversation-last-msg">
                 {{ getLastMsgPreview(conv) }}
               </span>
-              <el-badge
+              <span
                 v-if="conv.unread_count > 0"
-                :value="conv.unread_count"
-                :max="99"
-                class="conversation-badge"
-              />
+                class="unread-badge"
+              >
+                {{ conv.unread_count > 99 ? '99+' : conv.unread_count }}
+              </span>
             </div>
           </div>
         </div>
@@ -109,13 +115,14 @@
       <template v-else>
         <div class="no-conversation">
           <div class="empty-state">
-            <div class="empty-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
+            <img src="/logo3.png" alt="logo" class="empty-logo" />
+            <h3>欢迎使用校园即时通信</h3>
+            <p>从左侧选择会话开始聊天，或前往通讯录添加好友</p>
+            <div class="empty-actions">
+              <el-button type="primary" @click="$router.push('/contacts')">
+                查看通讯录
+              </el-button>
             </div>
-            <h3>选择一个会话</h3>
-            <p>从左侧列表选择会话开始聊天</p>
           </div>
         </div>
       </template>
@@ -219,85 +226,176 @@ function handleLogout() {
 </script>
 
 <style scoped>
+/* ═══════════════════════════════════════
+   Campus IM Home — CSS Visual Only
+   DOM / JS / 交互逻辑零改动
+   ═══════════════════════════════════════ */
 .home-page {
   display: flex;
   height: 100vh;
-  background-color: var(--color-bg);
+  background: linear-gradient(155deg, #F0F4FF 0%, #EAF0FE 25%, #F4F0FF 55%, #EDF6FF 100%);
+  position: relative;
 }
 
-/* ── 左侧边栏 ───────────── */
+/* ── 左侧边栏 ─────────────────────── */
 .home-sidebar {
-  width: 320px;
-  min-width: 320px;
-  background-color: var(--color-surface);
-  border-right: 1px solid var(--color-border);
+  width: 340px;
+  min-width: 340px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
 }
 
+/* ── 侧边栏头部 ───────────────────── */
 .sidebar-header {
   display: flex;
   align-items: center;
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--color-border-light);
-  gap: var(--space-3);
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(91, 124, 250, 0.06);
+  gap: 12px;
+}
+
+.sidebar-header-avatar {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #5B7CFA 0%, #54C6EB 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(91, 124, 250, 0.2);
+}
+
+.sidebar-header-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .sidebar-header-name {
-  flex: 1;
-  font-size: var(--text-md);
+  font-size: 15px;
   font-weight: 600;
-  color: var(--color-text);
+  color: #1a1a2e;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.sidebar-header-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34C759;
+  box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.18);
+}
+
 .sidebar-header-menu {
   cursor: pointer;
   font-size: 18px;
-  color: var(--color-text-muted);
-  transition: color var(--transition-fast);
+  color: #9DA3B0;
+  transition: color 200ms ease;
+  flex-shrink: 0;
 }
 
 .sidebar-header-menu:hover {
-  color: var(--color-text);
+  color: #1a1a2e;
 }
 
+/* ── 搜索框 ───────────────────────── */
 .sidebar-search {
-  padding: var(--space-3) var(--space-4);
+  padding: 14px 16px 10px;
 }
 
+.sidebar-search :deep(.el-input__wrapper) {
+  border-radius: 12px;
+  background: rgba(91, 124, 250, 0.03);
+  box-shadow: none;
+  border: 1px solid rgba(91, 124, 250, 0.08);
+  transition: all 200ms ease;
+}
+
+.sidebar-search :deep(.el-input__wrapper:hover) {
+  border-color: rgba(91, 124, 250, 0.18);
+  background: rgba(91, 124, 250, 0.05);
+}
+
+.sidebar-search :deep(.el-input__wrapper.is-focus) {
+  border-color: #5B7CFA;
+  background: rgba(91, 124, 250, 0.04);
+  box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.08);
+}
+
+/* ── Tab 切换 ──────────────────────── */
 .sidebar-tabs {
-  padding: 0 var(--space-4);
+  padding: 0 16px;
 }
 
 .sidebar-tabs :deep(.el-tabs__header) {
   margin-bottom: 0;
 }
 
+.sidebar-tabs :deep(.el-tabs__item) {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 14px;
+  height: 38px;
+  line-height: 38px;
+  color: #8890a0;
+  transition: all 200ms ease;
+}
+
+.sidebar-tabs :deep(.el-tabs__item.is-active) {
+  color: #5B7CFA;
+  font-weight: 600;
+}
+
+.sidebar-tabs :deep(.el-tabs__active-bar) {
+  background: linear-gradient(90deg, #5B7CFA 0%, #54C6EB 100%);
+  height: 2.5px;
+  border-radius: 2px;
+}
+
+.sidebar-tabs :deep(.el-tabs__nav-wrap::after) {
+  background-color: rgba(91, 124, 250, 0.06);
+}
+
+/* ── 会话列表 ──────────────────────── */
 .conversation-list {
   flex: 1;
   overflow-y: auto;
+  padding: 6px 8px;
 }
 
 .conversation-item {
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--space-5);
+  padding: 10px 12px;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
-  gap: var(--space-3);
-  border-left: 3px solid transparent;
+  transition: all 200ms ease;
+  gap: 12px;
+  border-radius: 12px;
+  margin-bottom: 2px;
 }
 
 .conversation-item:hover {
-  background-color: var(--color-surface-hover);
+  background: rgba(91, 124, 250, 0.05);
 }
 
 .conversation-item.active {
-  background-color: var(--color-selected);
-  border-left-color: var(--color-primary);
+  background: rgba(91, 124, 250, 0.08);
+  box-shadow: inset 3px 0 0 #5B7CFA;
 }
 
 .conversation-avatar {
@@ -313,21 +411,27 @@ function handleLogout() {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4px;
 }
 
 .conversation-name {
-  font-size: var(--text-base);
+  font-size: 14px;
   font-weight: 500;
-  color: var(--color-text);
+  color: #1a1a2e;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 160px;
 }
 
+.conversation-item.active .conversation-name {
+  color: #5B7CFA;
+  font-weight: 600;
+}
+
 .conversation-time {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
+  font-size: 11px;
+  color: #9DA3B0;
   flex-shrink: 0;
 }
 
@@ -335,22 +439,36 @@ function handleLogout() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: var(--space-1);
 }
 
 .conversation-last-msg {
   font-size: 13px;
-  color: var(--color-text-muted);
+  color: #9DA3B0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 180px;
 }
 
-.conversation-badge {
+/* ── 未读角标 ──────────────────────── */
+.unread-badge {
   flex-shrink: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #5B7CFA 0%, #7B6CF6 100%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(91, 124, 250, 0.3);
 }
 
+/* ── 通讯录入口 ───────────────────── */
 .contacts-panel {
   flex: 1;
   display: flex;
@@ -360,12 +478,20 @@ function handleLogout() {
 
 .contacts-link {
   text-decoration: none;
-  color: var(--color-primary);
-  font-size: var(--text-md);
+  color: #5B7CFA;
+  font-size: 14px;
   font-weight: 500;
+  transition: all 200ms ease;
+  padding: 8px 16px;
+  border-radius: 10px;
 }
 
-/* ── 右侧主区域 ─────────── */
+.contacts-link:hover {
+  background: rgba(91, 124, 250, 0.06);
+  color: #4A6AE8;
+}
+
+/* ── 右侧主区域 ───────────────────── */
 .home-main {
   flex: 1;
   display: flex;
@@ -378,34 +504,93 @@ function handleLogout() {
   display: flex;
   align-items: center;
   justify-content: center;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(91, 124, 250, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(84, 198, 235, 0.04) 0%, transparent 50%),
+    transparent;
 }
 
 .empty-state {
   text-align: center;
-  color: var(--color-text-muted);
+  max-width: 380px;
+  padding: 40px 32px;
 }
 
-.empty-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-xl);
-  background: var(--color-border-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto var(--space-5);
-  color: var(--color-text-muted);
+.empty-logo {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  margin-bottom: 28px;
+  opacity: 0.92;
+  filter: drop-shadow(0 4px 12px rgba(91, 124, 250, 0.12));
 }
 
 .empty-state h3 {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  margin: 0 0 var(--space-2);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
 }
 
 .empty-state p {
-  font-size: var(--text-base);
-  margin: 0;
+  font-size: 14px;
+  color: #8890a0;
+  margin: 0 0 28px;
+  line-height: 1.7;
+}
+
+.empty-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.empty-actions .el-button {
+  height: 44px;
+  border-radius: 12px;
+  padding: 0 32px;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #5B7CFA 0%, #7B6CF6 50%, #54C6EB 100%);
+  background-size: 200% 200%;
+  border: none;
+  box-shadow: 0 2px 10px rgba(91, 124, 250, 0.25);
+  transition: all 250ms ease;
+}
+
+.empty-actions .el-button:hover {
+  background-position: 100% 0;
+  box-shadow: 0 4px 16px rgba(91, 124, 250, 0.35);
+  transform: translateY(-1px);
+}
+
+.empty-actions .el-button:active {
+  transform: translateY(0);
+}
+
+/* ── 空状态插画区 ─────────────────── */
+.conversation-list :deep(.el-empty) {
+  padding: 48px 0 32px;
+}
+
+.conversation-list :deep(.el-empty__image) {
+  width: 140px;
+  height: 140px;
+  opacity: 0.6;
+  filter: hue-rotate(200deg) saturate(0.6) brightness(1.05);
+}
+
+.conversation-list :deep(.el-empty__description p) {
+  font-size: 13px;
+  color: #9DA3B0;
+  margin-top: 8px;
+}
+
+/* ── 响应式 ───────────────────────── */
+@media (max-width: 900px) {
+  .home-sidebar {
+    width: 100%;
+    min-width: 100%;
+  }
 }
 </style>

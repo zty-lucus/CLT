@@ -286,116 +286,183 @@ function formatTime(isoString) {
   flex-direction: column;
   background: var(--color-surface);
 }
+
+/* ── 顶部标题栏 ─────────────────── */
 .contacts-header {
-  padding: var(--space-4) var(--space-5) 0;
+  padding: 20px 24px 0;
   border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
 }
+
 .contacts-header h3 {
-  margin: 0 0 var(--space-2);
-  font-size: var(--text-lg);
-  font-weight: 600;
+  margin: 0 0 12px;
+  font-size: var(--text-xl);
+  font-weight: 700;
   color: var(--color-text);
 }
+
 .contacts-tabs {
   margin-bottom: -1px;
 }
+
 .badge-item {
-  margin-left: var(--space-1);
+  margin-left: 4px;
 }
+
 .tab-content {
   flex: 1;
   overflow-y: auto;
   padding: 0;
 }
 
-/* 搜索 */
+/* ── 搜索 ──────────────────────── */
 .search-box {
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--color-border-light);
+  padding: 16px 20px;
 }
 
-/* 搜索结果 */
+.search-box :deep(.el-input__wrapper) {
+  border-radius: 12px;
+  background: var(--color-bg);
+  box-shadow: none;
+  border: 1px solid transparent;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.search-box :deep(.el-input__wrapper:hover) {
+  border-color: var(--color-border);
+}
+
+.search-box :deep(.el-input__wrapper.is-focus) {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+}
+
+.search-box :deep(.el-input-group__append) {
+  border-radius: 0 12px 12px 0;
+  background: var(--color-bg);
+}
+
+/* ── 搜索结果 ──────────────────── */
 .search-results {
   padding: 0;
 }
+
 .search-user-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--color-border-light);
-  transition: background var(--transition-fast);
+  padding: 10px 20px;
+  margin: 0 8px 2px;
+  border-radius: 12px;
+  transition: background-color 200ms ease;
 }
+
 .search-user-item:hover {
-  background: var(--color-surface-hover);
+  background-color: var(--color-surface-hover);
 }
+
 .user-info {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 12px;
 }
+
+.user-info :deep(.el-avatar) {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
 .user-detail {
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
+
 .user-name {
   font-size: var(--text-base);
   font-weight: 500;
   color: var(--color-text);
 }
+
 .user-username {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
 
-/* 好友申请 */
+/* ── 好友申请 ──────────────────── */
 .request-section {
-  margin-bottom: var(--space-4);
+  margin-bottom: 8px;
 }
+
 .section-title {
-  padding: var(--space-3) var(--space-5) var(--space-2);
-  font-size: var(--text-base);
-  color: var(--color-text-secondary);
+  padding: 12px 20px 4px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
   font-weight: 500;
 }
+
 .request-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--color-border-light);
-  transition: background var(--transition-fast);
+  padding: 10px 20px;
+  margin: 0 8px 2px;
+  border-radius: 12px;
+  transition: background-color 200ms ease;
 }
+
 .request-item:hover {
-  background: var(--color-surface-hover);
+  background-color: var(--color-surface-hover);
 }
+
 .request-info {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 12px;
   flex: 1;
+  min-width: 0;
 }
+
+.request-info :deep(.el-avatar) {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
 .request-detail {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
+
 .request-name {
   font-size: var(--text-base);
   font-weight: 500;
   color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
 .request-msg {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
+
 .request-time {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
 }
+
 .request-actions {
   display: flex;
-  gap: var(--space-2);
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.request-actions .el-button {
+  border-radius: 8px;
 }
 </style>

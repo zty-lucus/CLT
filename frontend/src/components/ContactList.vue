@@ -179,50 +179,58 @@ function getAvatarText(friend) {
   padding-bottom: var(--space-4);
 }
 
-/* 分组 */
+/* ── 分组标题 ───────────────────── */
 .friend-group {
   margin-bottom: var(--space-2);
 }
+
 .group-header {
-  padding: var(--space-3) var(--space-5) var(--space-1);
+  padding: 12px 20px 4px;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
 }
+
 .group-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
 }
+
 .group-dot.online {
   background-color: var(--color-success);
 }
+
 .group-dot.offline {
   background-color: var(--color-text-muted);
 }
+
 .group-title {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   font-weight: 500;
 }
 
-/* 好友条目 */
+/* ── 好友条目 ───────────────────── */
 .friend-item {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-5);
-  gap: var(--space-3);
+  padding: 8px 20px;
+  gap: 12px;
   cursor: pointer;
-  transition: background var(--transition-fast);
-  border-left: 3px solid transparent;
+  transition: background-color 200ms ease;
+  border-radius: 12px;
+  margin: 0 8px 2px;
 }
+
 .friend-item:hover {
-  background: var(--color-surface-hover);
-  border-left-color: var(--color-border);
+  background-color: var(--color-surface-hover);
 }
+
 .friend-item.offline {
-  opacity: 0.65;
+  opacity: 0.55;
 }
+
 .friend-item.offline:hover {
   opacity: 1;
 }
@@ -230,6 +238,12 @@ function getAvatarText(friend) {
 .friend-avatar {
   flex-shrink: 0;
   position: relative;
+}
+
+.friend-avatar :deep(.el-avatar) {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .status-dot {
@@ -241,20 +255,21 @@ function getAvatarText(friend) {
   border-radius: 50%;
   border: 2px solid var(--color-surface);
 }
+
 .status-dot.online {
   background-color: var(--color-success);
 }
+
 .status-dot.offline {
   background-color: var(--color-text-muted);
 }
 
+/* ── 好友信息 ───────────────────── */
 .friend-info {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
+
 .friend-name {
   font-size: var(--text-base);
   font-weight: 500;
@@ -266,45 +281,69 @@ function getAvatarText(friend) {
 
 .friend-actions {
   flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 200ms ease;
 }
 
+.friend-item:hover .friend-actions {
+  opacity: 1;
+}
+
+/* ── 加载态 ─────────────────────── */
 .loading-wrap {
-  padding: var(--space-5);
+  padding: 20px;
 }
 
-/* 右键菜单 */
+/* ── 右键菜单 ───────────────────── */
 .context-menu {
   position: fixed;
   z-index: 9999;
   background: var(--color-surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-xl);
-  padding: var(--space-1) 0;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+  padding: 4px 0;
   min-width: 160px;
   border: 1px solid var(--color-border-light);
+  animation: menuFadeIn 150ms ease;
 }
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .menu-item {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
+  gap: 8px;
+  padding: 8px 16px;
   font-size: 13px;
   color: var(--color-text);
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: background-color 150ms ease;
 }
+
 .menu-item:hover {
-  background: var(--color-selected);
+  background-color: var(--color-surface-hover);
 }
+
 .menu-item.danger {
   color: var(--color-danger);
 }
+
 .menu-item.danger:hover {
-  background: #FEF2F2;
+  background-color: #FEF2F2;
 }
+
 .menu-divider {
   height: 1px;
   background: var(--color-border-light);
-  margin: var(--space-1) 0;
+  margin: 4px 0;
 }
 </style>

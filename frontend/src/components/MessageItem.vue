@@ -2,7 +2,7 @@
   <div class="message-item" :class="{ 'is-self': isSelf }">
     <!-- 头像 -->
     <el-avatar
-      :size="34"
+      :size="36"
       :src="message.sender_avatar"
       class="message-avatar"
     >
@@ -31,12 +31,18 @@
       <!-- 文件消息 -->
       <div v-else-if="message.msg_type === 2" class="message-file">
         <div class="message-bubble file-bubble">
-          <el-icon :size="18"><Document /></el-icon>
-          <span class="file-name">{{ message.content }}</span>
+          <div class="file-icon">
+            <el-icon :size="20"><Document /></el-icon>
+          </div>
+          <div class="file-info">
+            <span class="file-name">{{ message.content }}</span>
+            <span class="file-hint">点击下载</span>
+          </div>
           <el-button
             text
             size="small"
             type="primary"
+            class="file-download-btn"
             @click="downloadFile(message.file_id)"
           >
             下载
@@ -108,9 +114,10 @@ function downloadFile(fileId) {
 </script>
 
 <style scoped>
+/* ── 消息行 ─────────────────────── */
 .message-item {
   display: flex;
-  gap: var(--space-2);
+  gap: 10px;
   align-items: flex-start;
 }
 
@@ -120,35 +127,44 @@ function downloadFile(fileId) {
 
 .message-avatar {
   flex-shrink: 0;
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .message-body {
   max-width: 70%;
+  min-width: 0;
 }
 
+/* ── 发送者昵称（群聊） ─────────── */
 .message-sender {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   margin-left: 2px;
 }
 
+/* ── 系统消息 ───────────────────── */
 .message-system {
   text-align: center;
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   padding: var(--space-1) var(--space-3);
+  background: transparent;
 }
 
+/* ── 消息气泡 ───────────────────── */
 .message-bubble {
   padding: 10px 14px;
-  border-radius: var(--radius-md);
+  border-radius: 18px;
   font-size: var(--text-base);
-  line-height: 1.5;
+  line-height: 1.55;
   word-break: break-word;
   background-color: var(--color-chat-other);
   color: var(--color-text);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 2px rgba(31, 41, 55, 0.04);
+  transition: background-color 200ms ease;
 }
 
 .message-item.is-self .message-bubble {
@@ -156,10 +172,38 @@ function downloadFile(fileId) {
   color: #fff;
 }
 
+/* ── 文件消息 ───────────────────── */
 .message-file .file-bubble {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
+  padding: 12px 16px;
+  min-width: 200px;
+}
+
+.file-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.message-item.is-self .file-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .file-name {
@@ -167,24 +211,50 @@ function downloadFile(fileId) {
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 160px;
+  font-size: var(--text-base);
+  font-weight: 500;
 }
 
+.file-hint {
+  font-size: var(--text-xs);
+  opacity: 0.6;
+}
+
+.file-download-btn {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  padding: 0;
+}
+
+/* ── 图片消息 ───────────────────── */
 .message-image-content {
-  max-width: 200px;
-  max-height: 200px;
-  border-radius: var(--radius-md);
+  max-width: 220px;
+  max-height: 220px;
+  border-radius: 12px;
   cursor: pointer;
+  transition: opacity 200ms ease;
 }
 
+.message-image-content:hover {
+  opacity: 0.9;
+}
+
+/* ── 时间与状态 ─────────────────── */
 .message-meta {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
-  margin-top: 2px;
+  margin-top: 3px;
   display: flex;
   gap: var(--space-1);
+  align-items: center;
 }
 
 .message-item.is-self .message-meta {
   justify-content: flex-end;
+}
+
+.message-status {
+  font-size: var(--text-xs);
+  opacity: 0.7;
 }
 </style>

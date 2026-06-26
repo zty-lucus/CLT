@@ -206,35 +206,39 @@ function handleClose() {
   max-height: 60vh;
 }
 
+/* ── 分区 ──────────────────────── */
 .group-manage-section {
-  margin-bottom: var(--space-5);
+  margin-bottom: 24px;
 }
 
 .section-title {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
-  margin-bottom: var(--space-3);
-  padding-bottom: var(--space-1);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--color-border-light);
   font-weight: 500;
 }
 
+/* ── 群信息行 ──────────────────── */
 .group-info-row {
   display: flex;
-  margin-bottom: var(--space-1);
+  padding: 6px 0;
 }
 
 .group-info-row .label {
-  width: 70px;
+  width: 72px;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: var(--text-sm);
+  flex-shrink: 0;
 }
 
 .group-info-row .value {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text);
 }
 
+/* ── 成员列表 ──────────────────── */
 .member-list {
   max-height: 300px;
   overflow-y: auto;
@@ -243,32 +247,44 @@ function handleClose() {
 .member-item {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-border-light);
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background-color 200ms ease;
 }
 
-.member-item:last-child {
-  border-bottom: none;
+.member-item:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.member-item :deep(.el-avatar) {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .member-info {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 6px;
 }
 
 .member-name {
-  font-size: 13px;
+  font-size: var(--text-base);
   color: var(--color-text);
 }
 
+/* ── 底部操作 ──────────────────── */
 .group-manage-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-2);
-  padding-top: var(--space-4);
+  gap: 8px;
+  padding-top: 16px;
   border-top: 1px solid var(--color-border-light);
+}
+
+.group-manage-actions .el-button {
+  border-radius: 10px;
 }
 </style>
