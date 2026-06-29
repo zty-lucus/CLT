@@ -21,7 +21,9 @@ Thumbs.db
 
 # Word temp files & dev logs
 ~$*.docx
-docs/张天阳_个人开发日志.docx
+
+# Docs (not committed)
+docs/
 
 # Uploads
 backend/uploads/*
