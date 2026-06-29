@@ -21,12 +21,15 @@
 ## 功能特性
 
 - 用户注册 / 登录（JWT 认证）
-- 好友搜索、申请、管理
-- 单聊 / 群聊实时消息
+- 好友搜索、添加、删除、管理
+- 单聊 / 群聊实时消息（WebSocket）
+- 群组创建、加入、退出、成员管理（角色：群主 / 管理员 / 成员）
 - 文件上传 / 下载（支持图片、文档、压缩包等）
 - 消息记录持久化与分页加载
-- 在线状态显示
+- 在线状态实时显示
 - 未读消息计数
+- 系统消息通知（加群、退群、角色变更等）
+- 个人资料编辑
 
 ## 项目结构
 
@@ -38,22 +41,29 @@ campus-im/
 │   │   ├── routes/          # API 路由
 │   │   ├── services/        # 业务逻辑
 │   │   ├── sockets/         # WebSocket 事件
-│   │   └── utils/           # 工具函数
+│   │   ├── utils/           # 工具函数
+│   │   └── constants.py     # 常量定义（消息类型、会话类型、角色枚举）
+│   ├── tests/               # 后端测试（pytest）
 │   ├── uploads/             # 文件上传目录
+│   ├── config.py            # 配置管理
 │   ├── requirements.txt     # Python 依赖
 │   └── run.py               # 启动入口
 ├── frontend/                # 前端项目
 │   ├── src/
-│   │   ├── api/             # API 请求
+│   │   ├── api/             # API 请求封装
 │   │   ├── components/      # 公共组件
-│   │   ├── stores/          # 状态管理
-│   │   ├── views/           # 页面视图
-│   │   └── router/          # 路由配置
+│   │   ├── constants/       # 常量定义
+│   │   ├── router/          # 路由配置
+│   │   ├── socket/          # WebSocket 客户端
+│   │   ├── stores/          # 状态管理（Pinia）
+│   │   ├── utils/           # 工具函数（localStorage 封装等）
+│   │   └── views/           # 页面视图
 │   └── package.json
 ├── docs/                    # 项目文档
 │   ├── 需求分析文档.docx
 │   ├── 系统设计文档.docx
-│   └── 架构设计说明书.docx
+│   ├── 架构设计说明书.docx
+│   └── _arch_diagram.png   # 架构图
 └── README.md
 ```
 
@@ -141,6 +151,19 @@ npm run dev
 - 需求分析文档 — 功能需求、用户角色、用例分析
 - 系统设计文档 — 数据库设计、API 接口、模块划分
 - 架构设计说明书 — 系统架构、技术选型、部署方案
+- 开发日志 — 各成员开发过程记录
+
+## 测试
+
+```bash
+# 后端测试
+cd backend
+pytest
+
+# 前端测试
+cd frontend
+npx vitest
+```
 
 ## 许可证
 
