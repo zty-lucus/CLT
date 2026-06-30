@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import { getToken } from '../utils/storage'
 
 const routes = [
   { path: '/login', name: 'Login', component: () => import('../views/Login.vue') },
@@ -10,12 +11,12 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
+  const token = getToken()
   if (to.meta.requiresAuth && !token) {
     next('/login')
   } else {

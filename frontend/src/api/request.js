@@ -1,15 +1,17 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '../router'
+import { getToken, clearAuth } from '../utils/storage'
+import { SERVER_URL } from '../config'
 
 const request = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: SERVER_URL + '/api',
   timeout: 10000,
 })
 
 request.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -24,7 +26,7 @@ request.interceptors.response.use(
     if (res.code !== 0) {
       ElMessage.error(res.message || '请求失败')
       if (res.code === 1005) {
-        localStorage.removeItem('token')
+        clearAuth()
         router.push('/login')
       }
       return Promise.reject(res)
@@ -35,7 +37,7 @@ request.interceptors.response.use(
     if (error.response) {
       const { status, data } = error.response
       if (status === 401) {
-        localStorage.removeItem('token')
+        clearAuth()
         router.push('/login')
       }
       ElMessage.error(data?.message || `请求错误 (${status})`)

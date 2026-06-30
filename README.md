@@ -1,6 +1,24 @@
 # 校园即时通信与文件传输系统
 
-面向校园用户的 Web 端即时通信与文件传输平台，支持单聊、群聊、文件上传下载、好友管理等功能。
+面向校园用户的即时通信与文件传输平台，支持单聊、群聊、文件上传下载、好友管理等功能。同时提供 **Web 端（B/S）** 和 **桌面客户端（C/S）** 两种使用方式。
+
+## 架构
+
+```
+         ┌──────────────────────────┐
+         │     Flask Server (:5000)  │
+         │  REST API + WebSocket     │
+         │  MySQL 数据库              │
+         └──────┬────────┬──────────┘
+                │        │
+    HTTP/WS ───┘        └─── HTTP/WS
+         │                    │
+  ┌──────┴──────┐    ┌───────┴────────┐
+  │  浏览器 (B/S) │    │ 桌面客户端 (C/S) │
+  │  Vue 3 Web   │    │  Electron 壳    │
+  │  localhost    │    │  .exe 安装包    │
+  └──────────────┘    └────────────────┘
+```
 
 ## 技术栈
 
@@ -11,12 +29,13 @@
 - **Flask-JWT-Extended** — JWT 认证
 - **MySQL 8.0** — 关系型数据库
 
-### 前端
+### 前端 / 客户端
 - **Vue 3** — 前端框架 (Composition API)
 - **Element Plus** — UI 组件库
 - **Pinia** — 状态管理
 - **Socket.IO Client** — WebSocket 客户端
 - **Vite** — 构建工具
+- **Electron** — 桌面客户端框架
 
 ## 功能特性
 
@@ -48,7 +67,10 @@ campus-im/
 │   ├── config.py            # 配置管理
 │   ├── requirements.txt     # Python 依赖
 │   └── run.py               # 启动入口
-├── frontend/                # 前端项目
+├── frontend/                # 前端 + 桌面客户端
+│   ├── electron/
+│   │   ├── main.js          # Electron 主进程（窗口管理、系统托盘）
+│   │   └── preload.js       # 预加载脚本（IPC 桥接）
 │   ├── src/
 │   │   ├── api/             # API 请求封装
 │   │   ├── components/      # 公共组件
@@ -57,7 +79,10 @@ campus-im/
 │   │   ├── socket/          # WebSocket 客户端
 │   │   ├── stores/          # 状态管理（Pinia）
 │   │   ├── utils/           # 工具函数（localStorage 封装等）
-│   │   └── views/           # 页面视图
+│   │   ├── views/           # 页面视图
+│   │   └── config.js        # 运行时配置（服务器地址）
+│   ├── electron-builder.yml # Electron 打包配置
+│   ├── server-config.json   # 服务器地址配置模板
 │   └── package.json
 └── README.md
 ```
@@ -137,7 +162,23 @@ npm install
 npm run dev
 ```
 
-前端默认运行在 `http://localhost:5173`
+前端默认运行在 `http://localhost:3000`
+
+### 桌面客户端启动（Electron）
+
+```bash
+cd frontend
+
+# 开发调试（需要先启动后端）
+npm run electron:dev
+
+# 构建安装包
+npm run electron:build
+# 输出：release/校园即时通信 Setup x.x.x.exe（安装版）
+#       release/校园即时通信 x.x.x.exe（免安装版）
+```
+
+桌面客户端默认连接 `http://localhost:5000`，可通过系统托盘 → 右键 → "设置服务器地址" 修改。
 
 ## 测试
 

@@ -1,0 +1,62 @@
+appId: com.campus-im.desktop
+productName: "校园即时通信"
+copyright: "Copyright © 2026"
+
+directories:
+  output: release
+
+files:
+  - dist/**/*
+  - electron/**/*
+  - server-config.json
+
+asar: true
+compression: maximum
+
+# ── Windows ────────────────────────────────────────────────
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  icon: public/logo3.png
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "校园即时通信"
+  language: "2052"   # 简体中文
+  displayLanguageSelector: false
+  uninstallDisplayName: "校园即时通信"
+
+# ── Mac ────────────────────────────────────────────────────
+mac:
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  icon: public/logo3.png
+  category: public.app-category.social-networking
+
+dmg:
+  title: "${productName} ${version}"
+
+# ── Linux ──────────────────────────────────────────────────
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  icon: public/logo3.png
+  category: Network
+  synopsis: "校园即时通信与文件传输系统"
+
+# ── Auto-update（自建更新服务器时启用）────────────────────
+# publish:
+#   provider: generic
+#   url: https://update.your-server.com/releases
+#   channel: latest

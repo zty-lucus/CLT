@@ -25,6 +25,9 @@ Thumbs.db
 # Docs (not committed)
 docs/
 
+# Electron build output
+release/
+
 # Uploads
 backend/uploads/*
 !backend/uploads/.gitkeep

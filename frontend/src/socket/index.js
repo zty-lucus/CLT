@@ -5,6 +5,7 @@ import { io } from 'socket.io-client'
 import { useUserStore } from '@/stores/user'
 import { useChatStore } from '@/stores/chat'
 import { useConversationStore } from '@/stores/conversation'
+import { SERVER_URL } from '@/config'
 
 let socket = null
 
@@ -24,7 +25,7 @@ export function initSocket() {
     return socket
   }
 
-  socket = io('http://localhost:5000', {
+  socket = io(SERVER_URL || '/', {
     transports: ['websocket', 'polling'],
     auth: { token },
     reconnection: true,
@@ -42,6 +43,12 @@ export function initSocket() {
 
   socket.on('connect_error', (error) => {
     console.error('[Socket] 连接错误:', error.message)
+  })
+
+  socket.on('error', (data) => {
+    import('element-plus').then(({ ElMessage }) => {
+      ElMessage.warning(data.message || '操作失败')
+    })
   })
 
   // ── 新消息事件 ──────────
